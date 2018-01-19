@@ -48,7 +48,7 @@ class FeatureNode implements KeywordNodeInterface, TaggedNodeInterface
      */
     private $language;
     /**
-     * @var null|string
+     * @var string
      */
     private $file;
     /**
@@ -66,7 +66,7 @@ class FeatureNode implements KeywordNodeInterface, TaggedNodeInterface
      * @param ScenarioInterface[] $scenarios
      * @param string              $keyword
      * @param string              $language
-     * @param null|string         $file        The absolute path to the feature file.
+     * @param string              $file        The absolute path to the feature file.
      * @param integer             $line
      */
     public function __construct(
@@ -80,6 +80,11 @@ class FeatureNode implements KeywordNodeInterface, TaggedNodeInterface
         $file,
         $line
     ) {
+        // Omitting the $file argument is deprecated. Warn the user.
+        if (empty($file)) {
+            trigger_error('Passing an empty $file argument is deprecated. Starting with Gherkin 5.0.0 this argument will be required.', E_USER_DEPRECATED);
+        }
+
         // Verify that the feature file is an absolute path.
         $filesystem = new Filesystem();
         if (!empty($file) && !$filesystem->isAbsolutePath($file)) {
@@ -231,7 +236,7 @@ class FeatureNode implements KeywordNodeInterface, TaggedNodeInterface
     /**
      * Returns feature file as an absolute path.
      *
-     * @return null|string
+     * @return string
      */
     public function getFile()
     {
